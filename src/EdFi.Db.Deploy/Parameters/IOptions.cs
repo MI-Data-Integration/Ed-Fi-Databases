@@ -14,8 +14,8 @@ namespace EdFi.Db.Deploy.Parameters
             'd',
             "database",
             Required = false,
-            Default = DatabaseType.ODS,
-            HelpText = "Database type: Admin, ODS, or Security")]
+            Default = "ODS",
+            HelpText = "Database type: i.e. Admin, ODS, Security...")]
         DatabaseType DatabaseType { get; set; }
 
         [Option('e', "engine", Required = true, HelpText = "Database engine type: SqlServer or PostgreSql")]

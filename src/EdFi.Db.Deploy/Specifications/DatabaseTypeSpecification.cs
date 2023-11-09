@@ -25,7 +25,8 @@ namespace EdFi.Db.Deploy.Specifications
 
             if (!_validOptions.Contains(obj.DatabaseType))
             {
-                ErrorMessages.Add($"DatabaseType must be one of {string.Join(',', _validOptions.Select(x => x.ToString()))}");
+                if (_validOptions.Contains(obj.DatabaseType, DatabaseTypeComparer.OrdinalIgnoreCase))
+                ErrorMessages.Add($"DatabaseType does not have a valid case: {string.Join(',', _validOptions.Select(x => x.ToString()))}");
             }
 
             return !ErrorMessages.Any();

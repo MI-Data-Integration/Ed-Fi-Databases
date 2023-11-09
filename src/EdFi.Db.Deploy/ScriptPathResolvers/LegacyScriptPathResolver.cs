@@ -3,6 +3,7 @@
 // The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 // See the LICENSE and NOTICES files in the project root for more information.
 
+using EdFi.Db.Deploy.Extensions;
 using System;
 using System.IO;
 
@@ -45,20 +46,7 @@ namespace EdFi.Db.Deploy.ScriptPathResolvers
 
         protected override string DatabaseTypeDirectory()
         {
-            switch (_databaseType)
-            {
-                case DatabaseType.Admin:
-                    return "EdFi_Admin";
-
-                case DatabaseType.Security:
-                    return "EdFiSecurity";
-
-                case DatabaseType.ODS:
-                    return "EdFi";
-
-                default:
-                    throw new ArgumentOutOfRangeException($"DatabaseType \"{_databaseType}\" is not found.");
-            }
+            return _databaseType.Directory(ArtifactsFolderStructureType.LegacyVersion);
         }
     }
 }

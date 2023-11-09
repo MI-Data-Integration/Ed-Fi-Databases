@@ -27,17 +27,11 @@ namespace EdFi.Db.Deploy.Extensions
             {
                 switch (databaseType)
                 {
-                    case DatabaseType.Admin:
-                        return "Admin";
-
-                    case DatabaseType.Security:
-                        return "Security";
-
-                    case DatabaseType.ODS:
+                    case "ODS":
                         return "Ods";
 
                     default:
-                        throw new ArgumentOutOfRangeException($"DatabaseType \"{databaseType}\" is not found.");
+                        return databaseType.ToString();
                 }
             }
 
@@ -45,17 +39,17 @@ namespace EdFi.Db.Deploy.Extensions
             {
                 switch (databaseType)
                 {
-                    case DatabaseType.Admin:
+                    case "Admin":
                         return "EdFi_Admin";
 
-                    case DatabaseType.Security:
+                    case "Security":
                         return "EdFiSecurity";
 
-                    case DatabaseType.ODS:
+                    case "ODS":
                         return "EdFi";
 
                     default:
-                        throw new ArgumentOutOfRangeException($"DatabaseType \"{databaseType}\" is not found.");
+                        return databaseType.ToString();
                 }
             }
         }

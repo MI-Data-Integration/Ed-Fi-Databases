@@ -55,20 +55,7 @@ namespace EdFi.Db.Deploy.ScriptPathResolvers {
 
         protected override string DatabaseTypeDirectory()
         {
-            switch (_databaseType)
-            {
-                case DatabaseType.Admin:
-                    return "Admin";
-
-                case DatabaseType.Security:
-                    return "Security";
-
-                case DatabaseType.ODS:
-                    return "Ods";
-
-                default:
-                    throw new ArgumentOutOfRangeException($"DatabaseType \"{_databaseType}\" is not found.");
-            }
+            return _databaseType.Directory(ArtifactsFolderStructureType.NewVersion);
         }
     }
 }
