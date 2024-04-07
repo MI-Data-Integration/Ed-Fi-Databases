@@ -16,6 +16,7 @@ using log4net;
 
 namespace EdFi.Db.Deploy.DatabaseCommands
 {
+
     public abstract class DeployDatabaseFromPathCommand : IDatabaseCommand
     {
         private const string EdFiStandardIdentifier = "EdFi.Ods.Standard";
@@ -50,39 +51,27 @@ namespace EdFi.Db.Deploy.DatabaseCommands
 
             var config = UpgradeEngineConfig.Create(options);
 
-            // deploy structure scripts
-            // NewVersion:    /Artifacts/[EngineTypeFolder]/Structure/[DatabaseTypeFolder]/{*.sql}
-            // LegacyVersion: /Database/Structure/[DatabaseTypeFolder]/{*.sql}
-            foreach (string path in filePaths)
+            foreach (ScriptType scriptType in Enum.GetValues(typeof(ScriptType)))
             {
-                var results = RunScripts(path, true);
-                commandResults.Add(results);
-
-                // If any filePath fails to upgrade, abort immediately to avoid further changing the database
-                if (!results.IsSuccessful)
+                // deploy <scriptType> scripts
+                // NewVersion:    /Artifacts/[EngineTypeFolder]/<scriptType>/[DatabaseTypeFolder]/{*.sql}
+                // LegacyVersion: /Database/<scriptType>/[DatabaseTypeFolder]/{*.sql}
+                foreach (string path in filePaths)
                 {
-                    DatabaseCommandResult.Create(commandResults);
-                }
-            }
+                    var results = RunScripts(path, scriptType);
+                    commandResults.Add(results);
 
-            // deploy data scripts
-            // NewVersion:    /Artifacts/[EngineTypeFolder]/Data/[DatabaseTypeFolder]/{*.sql}
-            // LegacyVersion: /Database/Data/[DatabaseTypeFolder]/{*.sql}
-            foreach (string path in filePaths)
-            {
-                var results = RunScripts(path, false);
-                commandResults.Add(results);
-
-                // If any filePath fails to upgrade, abort immediately to avoid further changing the database
-                if (!results.IsSuccessful)
-                {
-                    DatabaseCommandResult.Create(commandResults);
+                    // If any filePath fails to upgrade, abort immediately to avoid further changing the database
+                    if (!results.IsSuccessful)
+                    {
+                        DatabaseCommandResult.Create(commandResults);
+                    }
                 }
             }
 
             return DatabaseCommandResult.Create(commandResults);
 
-            DatabaseCommandResult RunScripts(string path, bool isStructureScripts)
+            DatabaseCommandResult RunScripts(string path, ScriptType scriptType)
             {
                 config.ParentPath = path;
                 config.ScriptPath = ScriptsPath(new ScriptPathResolver(path, options.DatabaseType, options.Engine));
@@ -113,10 +102,14 @@ namespace EdFi.Db.Deploy.DatabaseCommands
                         RequiresUpgrade = upgradeEngine.IsUpgradeRequired()
                     };
                 }
-
+                var upgradeIsRequired = upgradeEngine.IsUpgradeRequired();
+                if (upgradeIsRequired)
+                {
+                    _logger.Info($"Upgrade required for path {path}");
+                }
                 // Explicitly block database structure upgrades for the Ed-Fi Standard project on ODS if an upgrade is required and scripts have previously been executed for this path
-                if (isStructureScripts && config.DatabaseType == DatabaseType.ODS && IsEdFiStandardScriptsPath(path) &&
-                    upgradeEngine.IsUpgradeRequired() && upgradeEngine.GetExecutedScripts().Any())
+                if (scriptType == ScriptType.Structure && config.DatabaseType == DatabaseType.ODS && IsEdFiStandardScriptsPath(path) &&
+                    upgradeIsRequired && upgradeEngine.GetExecutedScripts().Any())
                 {
                     return new DatabaseCommandResult
                     {
@@ -136,9 +129,12 @@ namespace EdFi.Db.Deploy.DatabaseCommands
                 };
 
                 string ScriptsPath(IScriptPathResolver fileInfoProvider)
-                    => isStructureScripts
-                        ? fileInfoProvider.StructureScriptPath()
-                        : fileInfoProvider.DataScriptPath();
+                    => scriptType switch
+                    {
+                        ScriptType.Migration => fileInfoProvider.MigrationScriptPath(),
+                        ScriptType.Structure => fileInfoProvider.StructureScriptPath(),
+                        _ => fileInfoProvider.DataScriptPath()
+                    };
 
                 bool IsEdFiStandardScriptsPath(string scriptsPath) => scriptsPath.Contains(EdFiStandardIdentifier);
             }

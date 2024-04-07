@@ -12,6 +12,24 @@ namespace EdFi.Db.Deploy.ScriptPathResolvers
         public LegacyExtensionsScriptPathResolver(string path, DatabaseType databaseType, string feature = null)
             : base(path, databaseType, feature) { }
 
+        public override string MigrationScriptPath()
+            => Path.GetFullPath(
+                !string.IsNullOrEmpty(_feature)
+                    ? Path.Combine(
+                        _path,
+                        DatabaseConventions.SupportingArtifactsDirectory,
+                        DatabaseConventions.DatabaseDirectory,
+                        DatabaseConventions.MigrationDirectory,
+                        DatabaseTypeDirectory(),
+                        _feature)
+                    : Path.Combine(
+                        _path,
+                        DatabaseConventions.SupportingArtifactsDirectory,
+                        DatabaseConventions.DatabaseDirectory,
+                        DatabaseConventions.MigrationDirectory,
+                        DatabaseTypeDirectory()));
+
+
         public override string StructureScriptPath()
             => Path.GetFullPath(
                 !string.IsNullOrEmpty(_feature)

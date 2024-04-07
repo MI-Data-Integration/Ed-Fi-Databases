@@ -4,6 +4,14 @@
 // See the LICENSE and NOTICES files in the project root for more information.
 
 namespace EdFi.Db.Deploy.ScriptPathResolvers {
+
+    public enum ScriptType
+    {
+        Migration,
+        Structure,
+        Data
+    }
+
     public abstract class ScriptPathResolverBase : IScriptPathResolver
     {
         protected readonly DatabaseType _databaseType;
@@ -17,6 +25,7 @@ namespace EdFi.Db.Deploy.ScriptPathResolvers {
             _path = path;
         }
 
+        public abstract string MigrationScriptPath();
         public abstract string StructureScriptPath();
 
         public abstract string DataScriptPath();

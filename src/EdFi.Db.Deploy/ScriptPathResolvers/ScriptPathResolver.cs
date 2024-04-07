@@ -18,6 +18,23 @@ namespace EdFi.Db.Deploy.ScriptPathResolvers {
             _engineType = engineType;
         }
 
+        public override string MigrationScriptPath()
+            => Path.GetFullPath(
+                !string.IsNullOrEmpty(_feature)
+                    ? Path.Combine(
+                        _path,
+                        DatabaseConventions.ArtifactsDirectory,
+                        _engineType.Directory(),
+                        DatabaseConventions.MigrationDirectory,
+                        DatabaseTypeDirectory(),
+                        _feature)
+                    : Path.Combine(
+                        _path,
+                        DatabaseConventions.ArtifactsDirectory,
+                        _engineType.Directory(),
+                        DatabaseConventions.MigrationDirectory,
+                        DatabaseTypeDirectory()));
+
         public override string StructureScriptPath()
             => Path.GetFullPath(
                 !string.IsNullOrEmpty(_feature)

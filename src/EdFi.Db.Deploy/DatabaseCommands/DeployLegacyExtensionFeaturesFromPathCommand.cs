@@ -3,6 +3,7 @@
 // The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 // See the LICENSE and NOTICES files in the project root for more information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -49,29 +50,23 @@ namespace EdFi.Db.Deploy.DatabaseCommands
 
             var config = UpgradeEngineConfig.Create(options);
 
-            // deploy legacy extension features structure scripts
-            // /SupportingArtifacts/Database/Structure/[DatabaseTypeFolder]/[Feature]/{*.sql}
-            foreach (string path in filePaths)
+            foreach (ScriptType scriptType in Enum.GetValues(typeof(ScriptType)))
             {
-                foreach (string feature in features)
-                {
-                    commandResults.Add(RunScripts(path, feature, true));
-                }
-            }
 
-            // deploy legacy extension features data scripts
-            // /SupportingArtifacts/Database/Data/[DatabaseTypeFolder]/[Feature]/{*.sql}
-            foreach (string path in filePaths)
-            {
-                foreach (string feature in features)
+                // deploy legacy extension features <scriptType> scripts
+                // /SupportingArtifacts/Database/<scriptType>/[DatabaseTypeFolder]/[Feature]/{*.sql}
+                foreach (string path in filePaths)
                 {
-                    commandResults.Add(RunScripts(path, feature, false));
+                    foreach (string feature in features)
+                    {
+                        commandResults.Add(RunScripts(path, feature, scriptType));
+                    }
                 }
             }
 
             return DatabaseCommandResult.Create(commandResults);
 
-            DatabaseCommandResult RunScripts(string path, string feature, bool isStructureScripts)
+            DatabaseCommandResult RunScripts(string path, string feature, ScriptType scriptType)
             {
                 // note we can only run one path at a time, so we must recreate the db up instance.
 
@@ -107,9 +102,12 @@ namespace EdFi.Db.Deploy.DatabaseCommands
                 };
 
                 string ScriptsPath(IScriptPathResolver fileInfoProvider)
-                    => isStructureScripts
-                        ? fileInfoProvider.StructureScriptPath()
-                        : fileInfoProvider.DataScriptPath();
+                    => scriptType switch
+                    {
+                        ScriptType.Migration => fileInfoProvider.MigrationScriptPath(),
+                        ScriptType.Structure => fileInfoProvider.StructureScriptPath(),
+                        _ => fileInfoProvider.DataScriptPath()
+                    };
             }
         }
     }

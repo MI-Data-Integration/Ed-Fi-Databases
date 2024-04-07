@@ -3,6 +3,7 @@
 // The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 // See the LICENSE and NOTICES files in the project root for more information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -47,23 +48,19 @@ namespace EdFi.Db.Deploy.DatabaseCommands
 
             var config = UpgradeEngineConfig.Create(options);
 
-            // deploy legacy extensions structure scripts
-            // /SupportingArtifacts/Database/Structure/[DatabaseTypeFolder]/{*.sql}
-            foreach (string path in filePaths)
+            foreach (ScriptType scriptType in Enum.GetValues(typeof(ScriptType)))
             {
-                commandResults.Add(RunScripts(path, true));
-            }
-
-            // deploy legacy extensions data scripts
-            // /SupportingArtifacts/Database/Data/[DatabaseTypeFolder]/{*.sql}
-            foreach (string path in filePaths)
-            {
-                commandResults.Add(RunScripts(path, true));
+                // deploy legacy extensions <scriptType> scripts
+                // /SupportingArtifacts/Database/<scriptType>/[DatabaseTypeFolder]/{*.sql}
+                foreach (string path in filePaths)
+                {
+                    commandResults.Add(RunScripts(path, scriptType));
+                }
             }
 
             return DatabaseCommandResult.Create(commandResults);
 
-            DatabaseCommandResult RunScripts(string path, bool isStructureScripts)
+            DatabaseCommandResult RunScripts(string path, ScriptType scriptType)
             {
                 // note we can only run one path at a time, so we must recreate the db up instance.
                 config.ParentPath = path;
@@ -98,9 +95,12 @@ namespace EdFi.Db.Deploy.DatabaseCommands
                 };
 
                 string ScriptsPath(IScriptPathResolver fileInfoProvider)
-                    => isStructureScripts
-                        ? fileInfoProvider.StructureScriptPath()
-                        : fileInfoProvider.DataScriptPath();
+                    => scriptType switch
+                    {
+                        ScriptType.Migration => fileInfoProvider.MigrationScriptPath(),
+                        ScriptType.Structure => fileInfoProvider.StructureScriptPath(),
+                        _ => fileInfoProvider.DataScriptPath()
+                    };
             }
         }
     }

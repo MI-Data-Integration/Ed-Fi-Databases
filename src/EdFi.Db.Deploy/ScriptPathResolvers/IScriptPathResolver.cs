@@ -6,6 +6,8 @@
 namespace EdFi.Db.Deploy.ScriptPathResolvers {
     public interface IScriptPathResolver
     {
+        string MigrationScriptPath();
+
         string StructureScriptPath();
 
         string DataScriptPath();

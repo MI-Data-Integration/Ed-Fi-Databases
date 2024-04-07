@@ -9,6 +9,7 @@ namespace EdFi.Db.Deploy
     {
         public const string DataDirectory = "Data";
         public const string StructureDirectory = "Structure";
+        public const string MigrationDirectory = "Migration";
         public const string ArtifactsDirectory = "Artifacts";
         public const string SupportingArtifactsDirectory = "SupportingArtifacts";
         public const string DatabaseDirectory = "Database";
