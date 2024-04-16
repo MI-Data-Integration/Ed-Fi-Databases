@@ -86,6 +86,9 @@ namespace EdFi.Db.Deploy.DatabaseCommands
 
             bool IsLegacyDatabase(IOptions opt)
             {
+                if (opt.SkipLegacyCheck)
+                    return false;
+
                 _logger.Debug("Legacy database check: Query if [dbo].[VersionLevel] table exists in database");
 
                 var tables = _legacyDatabaseRepository.FindAllTables(opt.ConnectionString) ?? new List<DatabaseTable>();

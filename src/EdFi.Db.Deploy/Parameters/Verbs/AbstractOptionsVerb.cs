@@ -43,6 +43,8 @@ namespace EdFi.Db.Deploy.Parameters.Verbs
         public IEnumerable<string> FilePaths { get; set; }
 
         public IEnumerable<string> Features { get; set; }
+        
+        public bool SkipLegacyCheck { get; set; }
 
         public bool AreFeaturesValidForLegacyDatabaseDirectoryStructure() => Engine == EngineType.SqlServer;
     }

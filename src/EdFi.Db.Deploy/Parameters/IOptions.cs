@@ -34,5 +34,9 @@ namespace EdFi.Db.Deploy.Parameters
         IEnumerable<string> Features { get; set; }
 
         bool AreFeaturesValidForLegacyDatabaseDirectoryStructure();
+
+        [Option('s', "skipLegacyCheck", Default =false, HelpText = "Skip Legacy Check: Do not test for legacy Ods condition.")]
+        bool SkipLegacyCheck { get; set; }
+
     }
 }
