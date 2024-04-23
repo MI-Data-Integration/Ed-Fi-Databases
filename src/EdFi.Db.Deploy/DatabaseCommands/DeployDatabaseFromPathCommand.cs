@@ -53,18 +53,21 @@ namespace EdFi.Db.Deploy.DatabaseCommands
 
             foreach (ScriptType scriptType in Enum.GetValues(typeof(ScriptType)))
             {
-                // deploy <scriptType> scripts
-                // NewVersion:    /Artifacts/[EngineTypeFolder]/<scriptType>/[DatabaseTypeFolder]/{*.sql}
-                // LegacyVersion: /Database/<scriptType>/[DatabaseTypeFolder]/{*.sql}
-                foreach (string path in filePaths)
+                if (!options.ExcludeScriptTypes.Contains(scriptType.ToString()))
                 {
-                    var results = RunScripts(path, scriptType);
-                    commandResults.Add(results);
-
-                    // If any filePath fails to upgrade, abort immediately to avoid further changing the database
-                    if (!results.IsSuccessful)
+                    // deploy <scriptType> scripts
+                    // NewVersion:    /Artifacts/[EngineTypeFolder]/<scriptType>/[DatabaseTypeFolder]/{*.sql}
+                    // LegacyVersion: /Database/<scriptType>/[DatabaseTypeFolder]/{*.sql}
+                    foreach (string path in filePaths)
                     {
-                        DatabaseCommandResult.Create(commandResults);
+                        var results = RunScripts(path, scriptType);
+                        commandResults.Add(results);
+
+                        // If any filePath fails to upgrade, abort immediately to avoid further changing the database
+                        if (!results.IsSuccessful)
+                        {
+                            DatabaseCommandResult.Create(commandResults);
+                        }
                     }
                 }
             }

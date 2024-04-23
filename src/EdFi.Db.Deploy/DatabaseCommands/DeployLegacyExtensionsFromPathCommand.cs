@@ -50,11 +50,13 @@ namespace EdFi.Db.Deploy.DatabaseCommands
 
             foreach (ScriptType scriptType in Enum.GetValues(typeof(ScriptType)))
             {
-                // deploy legacy extensions <scriptType> scripts
-                // /SupportingArtifacts/Database/<scriptType>/[DatabaseTypeFolder]/{*.sql}
-                foreach (string path in filePaths)
-                {
-                    commandResults.Add(RunScripts(path, scriptType));
+                if (!options.ExcludeScriptTypes.Contains(scriptType.ToString()))
+                {                // deploy legacy extensions <scriptType> scripts
+                                 // /SupportingArtifacts/Database/<scriptType>/[DatabaseTypeFolder]/{*.sql}
+                    foreach (string path in filePaths)
+                    {
+                        commandResults.Add(RunScripts(path, scriptType));
+                    }
                 }
             }
 

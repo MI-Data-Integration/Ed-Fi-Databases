@@ -48,6 +48,8 @@ namespace EdFi.Db.Deploy.Parameters.Verbs
 
         public string LogLevelToConsole { get; set; }
 
+        public IEnumerable<string> ExcludeScriptTypes { get; set; }
+
         public bool AreFeaturesValidForLegacyDatabaseDirectoryStructure() => Engine == EngineType.SqlServer;
     }
 }

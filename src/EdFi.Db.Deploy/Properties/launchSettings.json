@@ -32,9 +32,13 @@
       "commandName": "Project",
       "commandLineArgs": "whatif --engine PostgreSql --connectionString \"Host=localhost; Port=5432; Database=Db_Deploy_Ods_Test; username=postgres; Application Name=EdFi.Db.Deploy;\" --filePaths \"../../../../../../Ed-Fi-Ods/\" \"../../../../../../Ed-Fi-ODS-Implementation/\" \"../../../../../../Ed-Fi-ODS/Application/EdFi.Ods.Standard\""
     },
-    "WTF": {
+    "v3Tov6-MigrationOnly": {
       "commandName": "Project",
-      "commandLineArgs": "deploy --engine SQLServer --database ODS --connectionString \"server=(local);trusted_connection=True;database=MI6_EdFi_Ods_255901_2024;application name=EdFi.Ods.WebApi;encrypt=False;\" --timeOut 1800 --filePaths \"C:\\git-home\\MI6\\Ed-Fi-ODS\\Application\\EdFi.Ods.Standard\" \"C:\\git-home\\MI6\\Ed-Fi-ODS\" \"C:\\git-home\\MI6\\Ed-Fi-ODS-Implementation\" \"C:\\git-home\\MI6\\Ed-Fi-ODS-Implementation\\Application\\EdFi.Ods.Extensions.MI\" \"C:\\git-home\\MI6\\Ed-Fi-ODS-Implementation\\Plugin\\EdFi.Suite3.Ods.Extensions.TPDM.Core.1.1.0.6.2.505\" --features \"Changes\", \"OneRoster\", \"RoleBasedSecurity\", \"SSRS-Reports\", \"OperationsCockpit\", \"DataExchange\" --skipLegacyCheck -l \"ERROR\""
+      "commandLineArgs": "deploy --engine SQLServer --database ODS --connectionString \"server=(local);trusted_connection=True;database=MI6_EdFi_Ods_255901_2024;application name=EdFi.Ods.WebApi;encrypt=False;\" --timeOut 1800 --filePaths \"C:\\git-home\\MI6\\Ed-Fi-ODS\\Application\\EdFi.Ods.Standard\" \"C:\\git-home\\MI6\\Ed-Fi-ODS\" \"C:\\git-home\\MI6\\Ed-Fi-ODS-Implementation\" \"C:\\git-home\\MI6\\Ed-Fi-ODS-Implementation\\Application\\EdFi.Ods.Extensions.MI\" \"C:\\git-home\\MI6\\Ed-Fi-ODS-Implementation\\Plugin\\EdFi.Suite3.Ods.Extensions.TPDM.Core.1.1.0.6.2.505\" --features \"Changes\",\"OneRoster\",\"RoleBasedSecurity\",\"SSRS-Reports\",\"OperationsCockpit\",\"DataExchange\" --skipLegacyCheck --logLevelToConsole \"INFO\" -x \"Structure\",\"Data\""
+    },
+    "v3Tov6": {
+      "commandName": "Project",
+      "commandLineArgs": "deploy --engine SQLServer --database ODS --connectionString \"server=(local);trusted_connection=True;database=MI6_EdFi_Ods_255901_2024;application name=EdFi.Ods.WebApi;encrypt=False;\" --timeOut 1800 --filePaths \"C:\\git-home\\MI6\\Ed-Fi-ODS\\Application\\EdFi.Ods.Standard\" \"C:\\git-home\\MI6\\Ed-Fi-ODS\" \"C:\\git-home\\MI6\\Ed-Fi-ODS-Implementation\" \"C:\\git-home\\MI6\\Ed-Fi-ODS-Implementation\\Application\\EdFi.Ods.Extensions.MI\" \"C:\\git-home\\MI6\\Ed-Fi-ODS-Implementation\\Plugin\\EdFi.Suite3.Ods.Extensions.TPDM.Core.1.1.0.6.2.505\" --features \"Changes\",\"OneRoster\",\"RoleBasedSecurity\",\"SSRS-Reports\",\"OperationsCockpit\",\"DataExchange\" --skipLegacyCheck --logLevelToConsole \"INFO\""
     }
   }
 }

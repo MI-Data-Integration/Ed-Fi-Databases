@@ -60,15 +60,17 @@ namespace EdFi.Db.Deploy.DatabaseCommands
 
             foreach (ScriptType scriptType in Enum.GetValues(typeof(ScriptType)))
             {
-
-                // deploy structure scripts
-                // NewVersion:    /Artifacts/[EngineTypeFolder]/<scritpType>/[DatabaseTypeFolder]/[Feature]/{*.sql}
-                // LegacyVersion: /Database/<scriptType>/[DatabaseTypeFolder]/[Feature]/{*.sql}
-                foreach (string path in filePaths)
+                if (!options.ExcludeScriptTypes.Contains(scriptType.ToString()))
                 {
-                    foreach (string feature in features)
+                    // deploy structure scripts
+                    // NewVersion:    /Artifacts/[EngineTypeFolder]/<scritpType>/[DatabaseTypeFolder]/[Feature]/{*.sql}
+                    // LegacyVersion: /Database/<scriptType>/[DatabaseTypeFolder]/[Feature]/{*.sql}
+                    foreach (string path in filePaths)
                     {
-                        commandResults.Add(RunScripts(path, feature, scriptType));
+                        foreach (string feature in features)
+                        {
+                            commandResults.Add(RunScripts(path, feature, scriptType));
+                        }
                     }
                 }
             }

@@ -41,5 +41,8 @@ namespace EdFi.Db.Deploy.Parameters
         [Option('l', "logLevelToConsole", Default = "INFO", HelpText = "The Log Level threshold for the console appender.")]
         string LogLevelToConsole { get; set; }
 
+        [Option('x', "ExcludeScriptTypes", Required = false, Separator = ',', HelpText = "ScriptType: Migration,Structure,Data")]
+        IEnumerable<string> ExcludeScriptTypes { get; set; }
+
     }
 }
