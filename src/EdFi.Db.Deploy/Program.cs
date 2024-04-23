@@ -14,12 +14,15 @@ using EdFi.Db.Deploy.Specifications;
 using EdFi.Db.Deploy.UpgradeEngineFactories;
 using log4net;
 using log4net.Config;
+using log4net.Core;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Security.Authentication;
 
 namespace EdFi.Db.Deploy
 {
@@ -45,6 +48,15 @@ namespace EdFi.Db.Deploy
                         config.CaseSensitive = false;
                     })
                 .ParseArguments<DeployDatabase, WhatIfExecution>(args);
+
+            var consoleAppender = LogManager.GetRepository(typeof(Program).GetTypeInfo().Assembly).GetAppenders().OfType<log4net.Appender.ConsoleAppender>().FirstOrDefault();
+            if (consoleAppender != null)
+            {
+                var logLevel = LogManager.GetRepository(typeof(Program).GetTypeInfo().Assembly).LevelMap[(result.Value as IOptions).LogLevelToConsole];
+                consoleAppender.Threshold = logLevel;
+                ((log4net.Repository.Hierarchy.Hierarchy)LogManager.GetRepository()).RaiseConfigurationChanged(EventArgs.Empty);
+            }
+
 
             if (args != null &&
                (args[0].Equals("help", StringComparison.InvariantCultureIgnoreCase) || args[0].Equals("version", StringComparison.InvariantCultureIgnoreCase)))

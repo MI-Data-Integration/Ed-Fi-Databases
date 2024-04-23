@@ -46,6 +46,8 @@ namespace EdFi.Db.Deploy.Parameters.Verbs
         
         public bool SkipLegacyCheck { get; set; }
 
+        public string LogLevelToConsole { get; set; }
+
         public bool AreFeaturesValidForLegacyDatabaseDirectoryStructure() => Engine == EngineType.SqlServer;
     }
 }

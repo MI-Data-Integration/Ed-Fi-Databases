@@ -38,5 +38,8 @@ namespace EdFi.Db.Deploy.Parameters
         [Option('s', "skipLegacyCheck", Default =false, HelpText = "Skip Legacy Check: Do not test for legacy Ods condition.")]
         bool SkipLegacyCheck { get; set; }
 
+        [Option('l', "logLevelToConsole", Default = "INFO", HelpText = "The Log Level threshold for the console appender.")]
+        string LogLevelToConsole { get; set; }
+
     }
 }
