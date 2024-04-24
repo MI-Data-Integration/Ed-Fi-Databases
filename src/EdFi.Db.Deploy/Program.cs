@@ -14,15 +14,14 @@ using EdFi.Db.Deploy.Specifications;
 using EdFi.Db.Deploy.UpgradeEngineFactories;
 using log4net;
 using log4net.Config;
-using log4net.Core;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security.Authentication;
 
 namespace EdFi.Db.Deploy
 {
@@ -48,15 +47,6 @@ namespace EdFi.Db.Deploy
                         config.CaseSensitive = false;
                     })
                 .ParseArguments<DeployDatabase, WhatIfExecution>(args);
-
-            var consoleAppender = LogManager.GetRepository(typeof(Program).GetTypeInfo().Assembly).GetAppenders().OfType<log4net.Appender.ConsoleAppender>().FirstOrDefault();
-            if (consoleAppender != null)
-            {
-                var logLevel = LogManager.GetRepository(typeof(Program).GetTypeInfo().Assembly).LevelMap[(result.Value as IOptions).LogLevelToConsole];
-                consoleAppender.Threshold = logLevel;
-                ((log4net.Repository.Hierarchy.Hierarchy)LogManager.GetRepository()).RaiseConfigurationChanged(EventArgs.Empty);
-            }
-
 
             if (args != null &&
                (args[0].Equals("help", StringComparison.InvariantCultureIgnoreCase) || args[0].Equals("version", StringComparison.InvariantCultureIgnoreCase)))
@@ -92,6 +82,43 @@ namespace EdFi.Db.Deploy
             int RunDatabaseDeployTool(IOptions options)
             {
                 _serviceProvider = ConfigureServices(new ServiceCollection(), options);
+
+                var consoleAppender = LogManager.GetRepository(typeof(Program).GetTypeInfo().Assembly).GetAppenders().OfType<log4net.Appender.ConsoleAppender>().FirstOrDefault();
+                if (consoleAppender != null)
+                {
+                    var logLevel = LogManager.GetRepository(typeof(Program).GetTypeInfo().Assembly).LevelMap[options.LogLevelToConsole];
+                    consoleAppender.Threshold = logLevel;
+                    ((log4net.Repository.Hierarchy.Hierarchy)LogManager.GetRepository()).RaiseConfigurationChanged(EventArgs.Empty);
+                }
+
+                var csb = new DbConnectionStringBuilder
+                {
+                    ConnectionString = options.ConnectionString
+                };
+
+                string server = "<server not set>";
+                string database = "<database not set>";
+
+                foreach (string key in csb.Keys)
+                {
+                    switch (key.ToLower())
+                    {
+                        case "server":
+                        case "host":
+                        case "data source":
+                            server = csb[key] as string;
+                            continue;
+                        case "database":
+                        case "initial catalog":
+                            database = csb[key] as string;
+                            continue;
+                        default:
+                            continue;
+                    }
+
+                }
+
+                _logger.Info($"Starting upgrade of {database} on {server}.");
 
                 exitCode = _serviceProvider.GetService<ApplicationRunner>()
                     .Run();
