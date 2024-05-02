@@ -34,8 +34,7 @@ namespace EdFi.Db.Deploy
 
         private static void Main(string[] args)
         {
-            ConfigureLogging();
-
+            ConfigureLogging("Ed-Fi-Db-Deploy");
             _logger.Debug("Entered Main, starts parsing");
 
             var result = new Parser(
@@ -69,12 +68,13 @@ namespace EdFi.Db.Deploy
 
             Environment.Exit(exitCode);
 
-            void ConfigureLogging()
+            void ConfigureLogging(string logName)
             {
                 var assembly = typeof(Program).GetTypeInfo()
                     .Assembly;
 
                 string configPath = Path.Combine(Path.GetDirectoryName(assembly.Location), "log4net.config");
+                log4net.GlobalContext.Properties["LogName"] = logName;
 
                 XmlConfigurator.Configure(LogManager.GetRepository(assembly), new FileInfo(configPath));
             }
@@ -118,6 +118,7 @@ namespace EdFi.Db.Deploy
 
                 }
 
+                ConfigureLogging($"{server}-{database}");
                 _logger.Info($"Starting upgrade of {database} on {server}.");
 
                 exitCode = _serviceProvider.GetService<ApplicationRunner>()
