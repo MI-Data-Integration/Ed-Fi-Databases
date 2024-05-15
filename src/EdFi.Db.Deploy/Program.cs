@@ -34,7 +34,7 @@ namespace EdFi.Db.Deploy
 
         private static void Main(string[] args)
         {
-            ConfigureLogging("Ed-Fi-Db-Deploy");
+            ConfigureLogging("Ed-Fi-Db-Deploy","INFO");
             _logger.Debug("Entered Main, starts parsing");
 
             var result = new Parser(
@@ -68,7 +68,7 @@ namespace EdFi.Db.Deploy
 
             Environment.Exit(exitCode);
 
-            void ConfigureLogging(string logName)
+            void ConfigureLogging(string logName, string consoleLogLevel)
             {
                 var assembly = typeof(Program).GetTypeInfo()
                     .Assembly;
@@ -77,19 +77,19 @@ namespace EdFi.Db.Deploy
                 log4net.GlobalContext.Properties["LogName"] = logName;
 
                 XmlConfigurator.Configure(LogManager.GetRepository(assembly), new FileInfo(configPath));
+                
+                var consoleAppender = LogManager.GetRepository(typeof(Program).GetTypeInfo().Assembly).GetAppenders().OfType<log4net.Appender.ConsoleAppender>().FirstOrDefault();
+                if (consoleAppender != null)
+                {
+                    var logLevel = LogManager.GetRepository(typeof(Program).GetTypeInfo().Assembly).LevelMap[consoleLogLevel];
+                    consoleAppender.Threshold = logLevel;
+                    ((log4net.Repository.Hierarchy.Hierarchy)LogManager.GetRepository()).RaiseConfigurationChanged(EventArgs.Empty);
+                }
             }
 
             int RunDatabaseDeployTool(IOptions options)
             {
                 _serviceProvider = ConfigureServices(new ServiceCollection(), options);
-
-                var consoleAppender = LogManager.GetRepository(typeof(Program).GetTypeInfo().Assembly).GetAppenders().OfType<log4net.Appender.ConsoleAppender>().FirstOrDefault();
-                if (consoleAppender != null)
-                {
-                    var logLevel = LogManager.GetRepository(typeof(Program).GetTypeInfo().Assembly).LevelMap[options.LogLevelToConsole];
-                    consoleAppender.Threshold = logLevel;
-                    ((log4net.Repository.Hierarchy.Hierarchy)LogManager.GetRepository()).RaiseConfigurationChanged(EventArgs.Empty);
-                }
 
                 var csb = new DbConnectionStringBuilder
                 {
@@ -118,7 +118,7 @@ namespace EdFi.Db.Deploy
 
                 }
 
-                ConfigureLogging($"{server}-{database}");
+                ConfigureLogging($"{server}-{database}", options.LogLevelToConsole);
                 _logger.Info($"Starting upgrade of {database} on {server}.");
 
                 exitCode = _serviceProvider.GetService<ApplicationRunner>()
