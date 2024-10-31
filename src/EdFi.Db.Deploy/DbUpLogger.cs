@@ -6,6 +6,7 @@
 using DbUp.Engine.Output;
 using EdFi.Db.Deploy.Helpers;
 using log4net;
+using System;
 
 namespace EdFi.Db.Deploy
 {
@@ -18,28 +19,53 @@ namespace EdFi.Db.Deploy
             _logger = Preconditions.ThrowIfNull(logger, nameof(logger));
         }
 
-        public void WriteInformation(string format, params object[] args)
+        public void LogInformation(string format, params object[] args)
         {
             Preconditions.ThrowIfNull(format, nameof(format));
             Preconditions.ThrowIfNull(args, nameof(args));
 
-            _logger.Info(string.Format(format, args));
+            _logger.InfoFormat(format, args);
         }
 
-        public void WriteError(string format, params object[] args)
+        public void LogError(string format, params object[] args)
         {
             Preconditions.ThrowIfNull(format, nameof(format));
             Preconditions.ThrowIfNull(args, nameof(args));
 
-            _logger.Error(string.Format(format, args));
+            _logger.ErrorFormat(format, args);
         }
 
-        public void WriteWarning(string format, params object[] args)
+		public void LogError(Exception ex, string format, params object[] args)
+		{
+			Preconditions.ThrowIfNull(format, nameof(format));
+			Preconditions.ThrowIfNull(args, nameof(args));
+
+			_logger.Error(string.Format(format, args), ex);
+		}
+
+		public void LogWarning(string format, params object[] args)
         {
             Preconditions.ThrowIfNull(format, nameof(format));
             Preconditions.ThrowIfNull(args, nameof(args));
 
-            _logger.Warn(string.Format(format, args));
+            _logger.WarnFormat(format, args);
         }
-    }
+
+		public void LogTrace(string format, params object[] args)
+		{
+			Preconditions.ThrowIfNull(format, nameof(format));
+			Preconditions.ThrowIfNull(args, nameof(args));
+			
+            _logger.DebugFormat(format, args);
+		}
+
+		public void LogDebug(string format, params object[] args)
+		{
+			Preconditions.ThrowIfNull(format, nameof(format));
+			Preconditions.ThrowIfNull(args, nameof(args));
+
+			_logger.DebugFormat(format, args);
+		}
+
+	}
 }
