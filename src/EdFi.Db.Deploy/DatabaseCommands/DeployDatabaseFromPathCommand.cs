@@ -16,7 +16,6 @@ using log4net;
 
 namespace EdFi.Db.Deploy.DatabaseCommands
 {
-
     public abstract class DeployDatabaseFromPathCommand : IDatabaseCommand
     {
         private const string EdFiStandardIdentifier = "EdFi.Ods.Standard";
@@ -60,7 +59,7 @@ namespace EdFi.Db.Deploy.DatabaseCommands
                     // LegacyVersion: /Database/<scriptType>/[DatabaseTypeFolder]/{*.sql}
                     foreach (string path in filePaths)
                     {
-                        var results = RunScripts(path, scriptType);
+                        var results = RunScripts(path, scriptType, options.StandardVersion, options.ExtensionVersion);
                         commandResults.Add(results);
 
                         // If any filePath fails to upgrade, abort immediately to avoid further changing the database
@@ -74,10 +73,10 @@ namespace EdFi.Db.Deploy.DatabaseCommands
 
             return DatabaseCommandResult.Create(commandResults);
 
-            DatabaseCommandResult RunScripts(string path, ScriptType scriptType)
+            DatabaseCommandResult RunScripts(string path, ScriptType scriptType, string standardVersion, string extensionVersion)
             {
                 config.ParentPath = path;
-                config.ScriptPath = ScriptsPath(new ScriptPathResolver(path, options.DatabaseType, options.Engine));
+                config.ScriptPath = ScriptsPath(new ScriptPathResolver(path, options.DatabaseType, options.Engine, standardVersion: standardVersion, extensionVersion: extensionVersion));
 
                 if (!Directory.Exists(config.ScriptPath))
                 {
@@ -105,14 +104,9 @@ namespace EdFi.Db.Deploy.DatabaseCommands
                         RequiresUpgrade = upgradeEngine.IsUpgradeRequired()
                     };
                 }
-                var upgradeIsRequired = upgradeEngine.IsUpgradeRequired();
-                if (upgradeIsRequired)
-                {
-                    _logger.Info($"Upgrade required for path {path}");
-                }
                 // Explicitly block database structure upgrades for the Ed-Fi Standard project on ODS if an upgrade is required and scripts have previously been executed for this path
                 if (scriptType == ScriptType.Structure && config.DatabaseType == DatabaseType.ODS && IsEdFiStandardScriptsPath(path) &&
-                    upgradeIsRequired && upgradeEngine.GetExecutedScripts().Any())
+                    upgradeEngine.IsUpgradeRequired() && upgradeEngine.GetExecutedScripts().Any())
                 {
                     return new DatabaseCommandResult
                     {

@@ -34,7 +34,8 @@ namespace EdFi.Db.Deploy
 
         private static void Main(string[] args)
         {
-            ConfigureLogging("Ed-Fi-Db-Deploy","INFO");
+            ConfigureLogging("Ed-Fi-Db-Deploy", "INFO");
+
             _logger.Debug("Entered Main, starts parsing");
 
             var result = new Parser(
@@ -77,7 +78,7 @@ namespace EdFi.Db.Deploy
                 log4net.GlobalContext.Properties["LogName"] = logName;
 
                 XmlConfigurator.Configure(LogManager.GetRepository(assembly), new FileInfo(configPath));
-                
+
                 var consoleAppender = LogManager.GetRepository(typeof(Program).GetTypeInfo().Assembly).GetAppenders().OfType<log4net.Appender.ConsoleAppender>().FirstOrDefault();
                 if (consoleAppender != null)
                 {

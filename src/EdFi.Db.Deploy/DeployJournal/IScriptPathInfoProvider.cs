@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using EdFi.Db.Deploy.Parameters;
 
 namespace EdFi.Db.Deploy.DeployJournal {
-
     public interface IScriptPathInfoProvider
     {
         IReadOnlyList<IScriptPathInfo> FindAllScriptsInFileSystem(IOptions options);

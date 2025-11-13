@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using EdFi.Db.Deploy.Extensions;
 using EdFi.Db.Deploy.Helpers;
 using EdFi.Db.Deploy.Parameters;
 using EdFi.Db.Deploy.ScriptPathResolvers;

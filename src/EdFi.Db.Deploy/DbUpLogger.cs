@@ -3,10 +3,10 @@
 // The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 // See the LICENSE and NOTICES files in the project root for more information.
 
+using System;
 using DbUp.Engine.Output;
 using EdFi.Db.Deploy.Helpers;
 using log4net;
-using System;
 
 namespace EdFi.Db.Deploy
 {
@@ -24,7 +24,7 @@ namespace EdFi.Db.Deploy
             Preconditions.ThrowIfNull(format, nameof(format));
             Preconditions.ThrowIfNull(args, nameof(args));
 
-            _logger.InfoFormat(format, args);
+            _logger.Info(string.Format(format, args));
         }
 
         public void LogError(string format, params object[] args)
@@ -32,40 +32,40 @@ namespace EdFi.Db.Deploy
             Preconditions.ThrowIfNull(format, nameof(format));
             Preconditions.ThrowIfNull(args, nameof(args));
 
-            _logger.ErrorFormat(format, args);
+            _logger.Error(string.Format(format, args));
         }
 
-		public void LogError(Exception ex, string format, params object[] args)
-		{
-			Preconditions.ThrowIfNull(format, nameof(format));
-			Preconditions.ThrowIfNull(args, nameof(args));
-
-			_logger.Error(string.Format(format, args), ex);
-		}
-
-		public void LogWarning(string format, params object[] args)
+        public void LogWarning(string format, params object[] args)
         {
             Preconditions.ThrowIfNull(format, nameof(format));
             Preconditions.ThrowIfNull(args, nameof(args));
 
-            _logger.WarnFormat(format, args);
+            _logger.Warn(string.Format(format, args));
         }
 
-		public void LogTrace(string format, params object[] args)
-		{
-			Preconditions.ThrowIfNull(format, nameof(format));
-			Preconditions.ThrowIfNull(args, nameof(args));
-			
-            _logger.DebugFormat(format, args);
-		}
+        public void LogTrace(string format, params object[] args)
+        {
+            Preconditions.ThrowIfNull(format, nameof(format));
+            Preconditions.ThrowIfNull(args, nameof(args));
 
-		public void LogDebug(string format, params object[] args)
-		{
-			Preconditions.ThrowIfNull(format, nameof(format));
-			Preconditions.ThrowIfNull(args, nameof(args));
+            _logger.Debug(string.Format(format, args));
+        }
 
-			_logger.DebugFormat(format, args);
-		}
+        public void LogDebug(string format, params object[] args)
+        {
+            Preconditions.ThrowIfNull(format, nameof(format));
+            Preconditions.ThrowIfNull(args, nameof(args));
 
-	}
+            _logger.Debug(string.Format(format, args));
+        }
+
+        public void LogError(Exception exception, string format, params object[] args)
+        {
+            Preconditions.ThrowIfNull(exception, nameof(exception));
+            Preconditions.ThrowIfNull(format, nameof(format));
+            Preconditions.ThrowIfNull(args, nameof(args));
+
+            _logger.Error(string.Format(format, args), exception);
+        }
+    }
 }

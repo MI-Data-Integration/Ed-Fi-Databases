@@ -69,7 +69,7 @@ namespace EdFi.Db.Deploy.DatabaseCommands
                     {
                         foreach (string feature in features)
                         {
-                            commandResults.Add(RunScripts(path, feature, scriptType));
+                            commandResults.Add(RunScripts(path, feature, scriptType, options.StandardVersion, options.ExtensionVersion));
                         }
                     }
                 }
@@ -77,11 +77,11 @@ namespace EdFi.Db.Deploy.DatabaseCommands
 
             return DatabaseCommandResult.Create(commandResults);
 
-            DatabaseCommandResult RunScripts(string path, string feature, ScriptType scriptType)
+            DatabaseCommandResult RunScripts(string path, string feature, ScriptType scriptType, string standardVersion, string extensionVersion)
             {
                 // note we can only run one path at a time, so we must recreate the db up instance.
                 config.ParentPath = path;
-                config.ScriptPath = ScriptsPath(new ScriptPathResolver(path, options.DatabaseType, options.Engine, feature));
+                config.ScriptPath = ScriptsPath(new ScriptPathResolver(path, options.DatabaseType, options.Engine, feature, standardVersion: standardVersion, extensionVersion: extensionVersion));
 
                 if (!Directory.Exists(config.ScriptPath))
                 {

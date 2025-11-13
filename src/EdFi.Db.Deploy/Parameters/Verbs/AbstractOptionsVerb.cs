@@ -3,7 +3,9 @@
 // The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 // See the LICENSE and NOTICES files in the project root for more information.
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EdFi.Db.Deploy.Parameters.Verbs
 {
@@ -49,6 +51,10 @@ namespace EdFi.Db.Deploy.Parameters.Verbs
         public string LogLevelToConsole { get; set; }
 
         public IEnumerable<string> ExcludeScriptTypes { get; set; }
+
+        public string StandardVersion { get; set; }
+
+        public string ExtensionVersion { get; set; }
 
         public bool AreFeaturesValidForLegacyDatabaseDirectoryStructure() => Engine == EngineType.SqlServer;
     }
