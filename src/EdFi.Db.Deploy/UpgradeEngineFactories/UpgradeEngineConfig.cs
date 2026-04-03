@@ -3,11 +3,11 @@
 // The Ed-Fi Alliance licenses this file to you under the Apache License, Version 2.0.
 // See the LICENSE and NOTICES files in the project root for more information.
 
-using System;
-using System.IO;
 using EdFi.Db.Deploy.Helpers;
 using EdFi.Db.Deploy.Parameters;
 using EdFi.Db.Deploy.Parameters.Verbs;
+using System;
+using System.IO;
 
 namespace EdFi.Db.Deploy.UpgradeEngineFactories
 {
@@ -35,7 +35,7 @@ namespace EdFi.Db.Deploy.UpgradeEngineFactories
 
             if (ParentPath.Contains("Plugin", StringComparison.InvariantCultureIgnoreCase))
             {
-                ParentPath = ParentPath.Substring(0,ParentPath.IndexOf("Extensions"));
+                ParentPath = ParentPath.Substring(0, ParentPath.IndexOf("Extensions", StringComparison.InvariantCultureIgnoreCase));
                 return ParentPath;
             }
             var parent = new DirectoryInfo(ParentPath).Parent;
