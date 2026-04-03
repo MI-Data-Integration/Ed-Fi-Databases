@@ -35,7 +35,7 @@ namespace EdFi.Db.Deploy.UpgradeEngineFactories
 
             if (ParentPath.Contains("Plugin", StringComparison.InvariantCultureIgnoreCase))
             {
-                ParentPath = ParentPath.Substring(0, ParentPath.IndexOf("Extensions", StringComparison.InvariantCultureIgnoreCase));
+                ParentPath = Path.GetDirectoryName(ParentPath.Substring(0, ParentPath.IndexOf("Extensions", StringComparison.InvariantCultureIgnoreCase)));
                 return ParentPath;
             }
             var parent = new DirectoryInfo(ParentPath).Parent;
